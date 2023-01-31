@@ -1,14 +1,61 @@
-// const fs = require('fs/promises')
+const fsp = require("fs/promises");
+const { nanoid } = require("nanoid");
+const path = require("path");
+const contactsPath = path.join(__dirname, "contacts.json");
+const { createHttpException } = require("../helpers/createHTTPexeptions");
 
-const listContacts = async () => {}
+const updateContactList = async (contacts) =>
+  await fsp.writeFile(contactsPath, JSON.stringify(contacts, null, 2));
 
-const getContactById = async (contactId) => {}
+const listContacts = async () => {
+  const unparsedContacts = await fsp.readFile(contactsPath, "utf8");
+  const contacts = JSON.parse(unparsedContacts);
+  return contacts;
+};
 
-const removeContact = async (contactId) => {}
+const getContactById = async (contactId) => {
+  const contacts = await listContacts();
+  const contact = contacts.find((contact) => contact.id === contactId);
+  if (!contact) {
+    throw createHttpException(404, "The contact is not found");
+  }
+  return contact;
+};
 
-const addContact = async (body) => {}
+const removeContact = async (contactId) => {
+  const contacts = await listContacts();
+  const index = contacts.findIndex((contact) => contact.id === contactId);
+  if (index === -1) {
+    throw createHttpException(404, "The contact is not found");
+  }
+  contacts.splice(index, 1);
+  await updateContactList(contacts);
+  return contacts[index];
+};
 
-const updateContact = async (contactId, body) => {}
+const addContact = async ({ name, email, phone }) => {
+  const contacts = await listContacts();
+  const contact = {
+    id: nanoid(),
+    name,
+    email,
+    phone,
+  };
+  contacts.push(contact);
+  await updateContactList(contacts);
+  return contact;
+};
+
+const updateContact = async (contactId, body) => {
+  const contacts = await listContacts();
+  const index = contacts.findIndex((contact) => contact.id === contactId);
+  if (index === -1) {
+    throw createHttpException(404, "The contact is not found");
+  }
+  contacts[index] = { contactId, ...body };
+  await updateContactList(contacts);
+  return contacts[index];
+};
 
 module.exports = {
   listContacts,
@@ -16,4 +63,4 @@ module.exports = {
   removeContact,
   addContact,
   updateContact,
-}
+};
