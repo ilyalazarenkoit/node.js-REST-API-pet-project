@@ -1,4 +1,4 @@
-const contactsMethods = require("../models/contacts");
+const { ContactModel } = require("../models/contacts.model");
 const { createHttpException } = require("../helpers/createHTTPexeptions");
 const { addContactScheme } = require("../helpers/schemas/addContactScheme");
 
@@ -9,8 +9,8 @@ const addContact = async (req, res, next) => {
       throw createHttpException(400, error.message);
     }
 
-    const { name, email, phone } = req.body;
-    const result = await contactsMethods.addContact({ name, email, phone });
+    const { name, email, phone, favorite } = req.body;
+    const result = await ContactModel.create({ name, email, phone, favorite });
     res.status(201).json(result);
   } catch (error) {
     next(error);
