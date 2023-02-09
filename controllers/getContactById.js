@@ -1,13 +1,13 @@
-const contactsMethods = require("../models/contacts");
+const { ContactModel } = require("../models/contacts.model");
+const { createHttpException } = require("../helpers/createHTTPexeptions");
 
 const getContactById = async (req, res, next) => {
   try {
-    console.log(req.params);
     const { contactId } = req.params;
-    const result = await contactsMethods.getContactById(contactId);
+    const result = await ContactModel.findById(contactId);
     res.json(result);
   } catch (error) {
-    next(error);
+    next(createHttpException(404, "Not found"));
   }
 };
 
