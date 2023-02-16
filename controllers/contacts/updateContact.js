@@ -1,8 +1,8 @@
 const {
   updateContactScheme,
-} = require("../helpers/schemas/updateContactSchema");
-const { ContactModel } = require("../models/contacts.model");
-const { createHttpException } = require("../helpers/createHTTPexeptions");
+} = require("../../helpers/schemas/updateContactSchema");
+const { ContactModel } = require("../../models/contacts.model");
+const { createHttpException } = require("../../helpers/createHTTPexeptions");
 
 const updateContact = async (req, res, next) => {
   try {

@@ -1,6 +1,8 @@
-const { ContactModel } = require("../models/contacts.model");
-const { createHttpException } = require("../helpers/createHTTPexeptions");
-const { updateStatusScheme } = require("../helpers/schemas/updateStatusSheme");
+const { ContactModel } = require("../../models/contacts.model");
+const { createHttpException } = require("../../helpers/createHTTPexeptions");
+const {
+  updateStatusScheme,
+} = require("../../helpers/schemas/updateStatusSheme");
 
 const updateStatusContact = async (req, res, next) => {
   try {
@@ -24,7 +26,6 @@ const updateStatusContact = async (req, res, next) => {
     if (!result) {
       throw createHttpException(404, "Not found");
     }
-    console.log(result);
     res.json(result);
   } catch (error) {
     next(error);
