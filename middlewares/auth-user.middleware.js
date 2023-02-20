@@ -18,13 +18,11 @@ const authUser = async (req, res, next) => {
     }
     try {
       const { userId, sessionKey } = jsonwebtoken.verify(token, jwtSecret);
-      const findUser = await userModel.findById(userId);
+      const findUser = await userModel.find({ userId, sessionKey });
       if (!findUser) {
         throw createHttpException(401, notAuthorizedError);
       }
-      if (findUser.sessionKey !== sessionKey) {
-        throw createHttpException(401, notAuthorizedError);
-      }
+
       req.user = findUser;
       next();
     } catch (error) {
