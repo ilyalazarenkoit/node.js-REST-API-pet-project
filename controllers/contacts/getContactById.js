@@ -1,5 +1,5 @@
-const { ContactModel } = require("../models/contacts.model");
-const { createHttpException } = require("../helpers/createHTTPexeptions");
+const { ContactModel } = require("../../models/contacts.model");
+const { createHttpException } = require("../../helpers/createHTTPexeptions");
 
 const getContactById = async (req, res, next) => {
   try {
