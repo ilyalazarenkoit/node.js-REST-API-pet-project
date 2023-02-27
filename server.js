@@ -1,8 +1,8 @@
-const app = require("./app");
+const { app } = require("./app");
 require("dotenv").config();
 const MONGOOSE_LINK = process.env.MONGOOSE_LINK;
 const mongoose = require("mongoose");
-
+mongoose.set("strictQuery", true);
 mongoose
   .connect(MONGOOSE_LINK)
   .then(() => {
