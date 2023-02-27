@@ -3,6 +3,7 @@ const { createHttpException } = require("../../helpers/createHTTPexeptions");
 const bcrypt = require("bcrypt");
 const { createAccessToken } = require("../../jwt/index");
 const crypto = require("crypto");
+const gravatar = require("gravatar");
 
 const signUp = async (req, res, next) => {
   const authorizationError = "User is already exists";
@@ -12,13 +13,14 @@ const signUp = async (req, res, next) => {
     if (findUser) {
       throw createHttpException(401, authorizationError);
     }
-
+    const avatarURL = gravatar.url(email);
     const passwordHash = await bcrypt.hash(password, 10);
     const sessionKey = crypto.randomUUID();
     const createUser = await userModel.create({
       email,
       passwordHash,
       sessionKey,
+      avatarURL,
     });
 
     const accsessToken = createAccessToken({
