@@ -6,6 +6,10 @@ const { validation } = require("../../middlewares/validation.middleware");
 const { multerConfig } = require("../../helpers/multer/multer-config");
 const multer = require("multer");
 const upload = multer({ storage: multerConfig });
+const userController = require("../../controllers/user/index");
+const {
+  reSendEmailValidation,
+} = require("../../middlewares/reSendEmailValidation");
 
 module.exports = router;
 
@@ -20,3 +24,12 @@ router.patch(
   authController.changeUserAvatar
 );
 router.patch("/", authUser, authController.updateStatusUser);
+router.get(
+  "/email/verify/:emailVerificationToken",
+  userController.emailVerification
+);
+router.post(
+  "/email/reverify",
+  reSendEmailValidation,
+  userController.reSendVerificationMail
+);

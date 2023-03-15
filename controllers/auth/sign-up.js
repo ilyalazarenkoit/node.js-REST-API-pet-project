@@ -1,10 +1,10 @@
 const { userModel } = require("../../models/user.model");
 const { createHttpException } = require("../../helpers/createHTTPexeptions");
 const bcrypt = require("bcrypt");
-const { createAccessToken } = require("../../jwt/index");
 const crypto = require("crypto");
 const gravatar = require("gravatar");
-
+const { nanoid } = require("nanoid");
+const { sendVerificationMail } = require("../../services/email");
 const signUp = async (req, res, next) => {
   const authorizationError = "User is already exists";
   const { email, password } = req.body;
@@ -16,18 +16,17 @@ const signUp = async (req, res, next) => {
     const avatarURL = gravatar.url(email);
     const passwordHash = await bcrypt.hash(password, 10);
     const sessionKey = crypto.randomUUID();
-    const createUser = await userModel.create({
+    const emailVerificationToken = nanoid(30);
+    await userModel.create({
       email,
       passwordHash,
       sessionKey,
       avatarURL,
+      emailVerificationToken,
     });
+    await sendVerificationMail(email, emailVerificationToken);
 
-    const accsessToken = createAccessToken({
-      userId: createUser._id.toString(),
-      sessionKey,
-    });
-    res.status(200).send(accsessToken);
+    res.status(200).send("Please verify your email");
   } catch (error) {
     next(error);
   }

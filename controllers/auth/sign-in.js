@@ -13,6 +13,10 @@ const signIn = async (req, res, next) => {
     if (!findUser) {
       throw createHttpException(401, authorizationError);
     }
+    if (!findUser.verify) {
+      res.status(401).json(`Please verify your email`);
+    }
+
     try {
       const isValidPassword = await bcrypt.compare(
         password,
